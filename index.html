@@ -33,6 +33,7 @@
       padding-bottom: 90px;
     }
 
+    /* 頂部森林綠 + 藍天漸層 Header */
     header {
       background: linear-gradient(145deg, var(--forest-dark) 0%, var(--primary) 50%, var(--sky-blue) 100%);
       color: #fff;
@@ -76,6 +77,7 @@
       gap: 12px;
     }
 
+    /* 費用看板 */
     .ledger-overview {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(12px);
@@ -91,6 +93,7 @@
     .ledger-item span { display: block; font-size: 11px; opacity: 0.85; }
     .ledger-item strong { font-size: 15px; font-weight: 700; color: #fff; }
 
+    /* 導航分頁列 */
     .nav-tabs {
       display: flex;
       gap: 8px;
@@ -115,12 +118,14 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
+    /* 內容容器 */
     .container {
       max-width: 680px;
       margin: 0 auto;
       padding: 18px 16px;
     }
 
+    /* 每日行程卡片 */
     .day-card {
       background: var(--card-bg);
       border-radius: var(--radius);
@@ -150,6 +155,7 @@
     .day-title { font-size: 16px; font-weight: 700; color: var(--forest-dark); }
     .day-sub { font-size: 12px; color: var(--text-muted); }
 
+    /* 時間軸項目 */
     .timeline { position: relative; padding-left: 18px; }
     .timeline::before {
       content: '';
@@ -219,6 +225,7 @@
       margin-bottom: 8px;
     }
 
+    /* 費用與代墊人標記 */
     .event-cost-bar {
       display: flex;
       justify-content: space-between;
@@ -268,8 +275,9 @@
 
     .event-actions {
       display: flex;
+      align-items: center;
       gap: 8px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
     .link-btn {
       font-size: 11px;
@@ -280,9 +288,11 @@
       gap: 4px;
       background: #fff;
       border: 1px solid #D6E7EF;
-      padding: 4px 8px;
+      padding: 5px 10px;
       border-radius: 6px;
+      font-weight: 600;
     }
+    .link-btn:active { background: #EAF4F9; }
     .del-btn {
       font-size: 11px;
       color: #A9B8B0;
@@ -292,6 +302,7 @@
       cursor: pointer;
     }
 
+    /* 每日小計 */
     .day-summary-bar {
       margin-top: 14px;
       padding: 10px 14px;
@@ -319,6 +330,7 @@
       gap: 6px;
     }
 
+    /* 購物清單 */
     .shopping-tabs {
       display: flex;
       gap: 10px;
@@ -389,6 +401,7 @@
       text-align: right;
     }
 
+    /* 行前備忘清單 */
     .checklist-group {
       background: #fff;
       border-radius: var(--radius);
@@ -397,11 +410,16 @@
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
     }
+    .checklist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
     .checklist-title {
       font-size: 15px;
       font-weight: 700;
       color: var(--forest-dark);
-      margin-bottom: 12px;
     }
     .check-item {
       display: flex;
@@ -418,10 +436,20 @@
       margin-top: 2px;
       accent-color: var(--primary);
     }
+    .check-text { flex: 1; }
     .check-text strong { display: block; color: var(--text); }
     .check-text span { font-size: 11px; color: var(--text-muted); }
     .check-item.done .check-text strong { text-decoration: line-through; opacity: 0.5; }
+    .del-check-btn {
+      color: #BFCEC6;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 2px;
+    }
 
+    /* iPhone 順暢彈窗 */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -525,6 +553,7 @@
       <span>🚗 自駕悠遊行</span>
     </div>
 
+    <!-- 行程公費獨立看板 -->
     <div class="ledger-overview">
       <div class="ledger-item">
         <span>Dora 先墊 (行程)</span>
@@ -540,6 +569,7 @@
       </div>
     </div>
 
+    <!-- 導航切換列 -->
     <div class="nav-tabs">
       <button class="nav-btn active" id="tab-btn-itinerary" onclick="switchMainTab('itinerary')">📅 每日行程</button>
       <button class="nav-btn" id="tab-btn-shopping" onclick="switchMainTab('shopping')">🛍️ 購物清單</button>
@@ -582,55 +612,24 @@
       <div id="shop-items-container"></div>
     </div>
 
-    <!-- 3. 行前備忘清單分頁 -->
+    <!-- 3. 行前備忘清單分頁 (支援自訂主題與項目) -->
     <div id="checklist-section" style="display: none;">
-      <div class="checklist-group">
-        <div class="checklist-title">🚗 自駕開車必帶三證件（極重要）</div>
-        <div class="check-item">
-          <input type="checkbox" onchange="this.parentElement.classList.toggle('done', this.checked)">
-          <div class="check-text">
-            <strong>台灣駕照正本</strong>
-            <span>出發前確認有效期限，不可只帶譯本或過期駕照！</span>
-          </div>
-        </div>
-        <div class="check-item">
-          <input type="checkbox" onchange="this.parentElement.classList.toggle('done', this.checked)">
-          <div class="check-text">
-            <strong>駕照日文譯本正本</strong>
-            <span>監理站辦理之紙本 A4 譯本，日本不承認國際駕照。</span>
-          </div>
-        </div>
-        <div class="check-item">
-          <input type="checkbox" onchange="this.parentElement.classList.toggle('done', this.checked)">
-          <div class="check-text">
-            <strong>護照正本（效期 6 個月以上）</strong>
-            <span>租車點交與機場辦理手續必備。</span>
-          </div>
-        </div>
-      </div>
+      <div id="checklist-containers"></div>
 
-      <div class="checklist-group">
-        <div class="checklist-title">📱 通關與支付準備</div>
-        <div class="check-item">
-          <input type="checkbox" onchange="this.parentElement.classList.toggle('done', this.checked)">
-          <div class="check-text">
-            <strong>Visit Japan Web (VJW) 申報截圖</strong>
-            <span>填寫完入境審查與海關 QR Code，截圖存入手機相簿以防沒網。</span>
-          </div>
-        </div>
-        <div class="check-item">
-          <input type="checkbox" onchange="this.parentElement.classList.toggle('done', this.checked)">
-          <div class="check-text">
-            <strong>實體信用卡（國泰 CUBE / 台新 Richart）</strong>
-            <span>租車櫃檯必須插實體卡作擔保核對，不收 Apple Pay。</span>
-          </div>
-        </div>
-        <div class="check-item">
-          <input type="checkbox" onchange="this.parentElement.classList.toggle('done', this.checked)">
-          <div class="check-text">
-            <strong>日本 eSIM / 漫遊網卡開通</strong>
-            <span>下飛機開啟行動數據即可即時聯繫。</span>
-          </div>
+      <!-- 新增備忘主題與項目表單 -->
+      <div class="day-card" style="margin-top: 16px; background: #FAFDFC;">
+        <h4 style="font-size: 14px; color: var(--forest-dark); margin-bottom: 10px;">＋ 新增自訂行前備忘</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <select id="new-check-cat" onchange="toggleCustomCatInput(this.value)" style="padding: 9px 12px; border: 1px solid #CCDCD3; border-radius: 10px; font-size: 13px;">
+            <option value="自駕開車必備">🚗 自駕開車必備</option>
+            <option value="通關與支付">📱 通關與支付</option>
+            <option value="生活與隨身行李">🧳 生活與隨身行李</option>
+            <option value="__NEW__">＋ 自訂全新主題...</option>
+          </select>
+          <input type="text" id="new-check-custom-cat" placeholder="請輸入新主題名稱 (例: 攝影器材)" style="display: none; padding: 9px 12px; border: 1px solid #CCDCD3; border-radius: 10px; font-size: 13px;">
+          <input type="text" id="new-check-title" placeholder="備忘項目名稱 (例: 遮陽帽、相機腳架)" style="padding: 9px 12px; border: 1px solid #CCDCD3; border-radius: 10px; font-size: 13px;">
+          <input type="text" id="new-check-desc" placeholder="詳細備註或提醒 (選填)" style="padding: 9px 12px; border: 1px solid #CCDCD3; border-radius: 10px; font-size: 13px;">
+          <button onclick="addChecklistItem()" style="padding: 10px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer;">加入備忘清單</button>
         </div>
       </div>
     </div>
@@ -669,8 +668,8 @@
           <option value="Renee">Renee 先付</option>
         </select>
 
-        <label>🗺️ Google 地圖關鍵字 (留空則不產生導航鈕)</label>
-        <input type="text" id="modal-map" placeholder="例: 美麗海水族館、瀨底島">
+        <label>🗺️ Google 地圖關鍵字 (填入名稱立即產生「地圖導航」按鈕)</label>
+        <input type="text" id="modal-map" placeholder="例: 美麗海水族館、瀨底島、名護自然動植物公園">
       </div>
 
       <div class="modal-footer">
@@ -705,7 +704,7 @@
               desc: "出示台灣駕照正本、日文譯本與護照。點交車輛、拍照錄影驗車、連接 Apple CarPlay 導航出發！",
               cost: 0,
               payer: "",
-              map: ""
+              map: "那霸機場 租車"
             }
           ]
         },
@@ -736,7 +735,7 @@
               desc: "還車前至附近指定加油站加滿油（保留收據）。檢查無誤後搭乘接駁車至國際線航廈報到。",
               cost: 0,
               payer: "",
-              map: ""
+              map: "那霸機場 還車 加油站"
             },
             {
               time: "13:35",
@@ -745,7 +744,7 @@
               desc: "辦理託運、通過安檢與免稅店採買，準時登機返台。",
               cost: 0,
               payer: "",
-              map: ""
+              map: "那霸機場 國際線"
             }
           ]
         }
@@ -765,14 +764,33 @@
           { title: "公司", tag: "伴手禮", done: false, cost: 0 }
         ],
         Renee: []
-      }
+      },
+      checklists: [
+        {
+          cat: "🚗 自駕開車必備",
+          items: [
+            { title: "台灣駕照正本", desc: "確認有效期限，不可只帶譯本或過期駕照！", done: false },
+            { title: "駕照日文譯本正本", desc: "監理站辦理之紙本 A4 譯本，日本不認國際駕照。", done: false },
+            { title: "護照正本（效期 6 個月以上）", desc: "租車點交與機場辦理出入境手續必備。", done: false }
+          ]
+        },
+        {
+          cat: "📱 通關與支付",
+          items: [
+            { title: "Visit Japan Web (VJW) 申報截圖", desc: "入境審查與海關 QR Code 先截圖在手機以防沒網。", done: false },
+            { title: "實體信用卡（國泰 CUBE / 台新 Richart）", desc: "租車櫃檯必須插實體卡作擔保，不收 Apple Pay。", done: false },
+            { title: "日本 eSIM / 漫遊網卡開通", desc: "飛機降落後開啟行動數據保持聯絡與導航。", done: false },
+            { title: "車用手機架 ＋ 充電線（CarPlay 導航）", desc: "連接車載螢幕使用 Google Maps 導航必備。", done: false }
+          ]
+        }
+      ]
     };
 
-    let tripData = JSON.parse(localStorage.getItem("okinawa_2026_data")) || defaultData;
+    let tripData = JSON.parse(localStorage.getItem("okinawa_2026_data_v2")) || defaultData;
     let activeShopPerson = "Dora";
 
     function saveData() {
-      localStorage.setItem("okinawa_2026_data", JSON.stringify(tripData));
+      localStorage.setItem("okinawa_2026_data_v2", JSON.stringify(tripData));
       renderAll();
     }
 
@@ -814,7 +832,9 @@
             if (ev.payer === "Dora") dayDora += cost;
             if (ev.payer === "Renee") dayRenee += cost;
 
-            const mapLink = ev.map ? `<a class="link-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ev.map)}" target="_blank">🗺️ 地圖導航</a>` : "";
+            // 確保所有行程只要有填寫 map 關鍵字，就能生成地圖導航按鈕
+            const mapQuery = ev.map || ev.title;
+            const mapLink = `<a class="link-btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}" target="_blank">🗺️ 地圖導航</a>`;
 
             eventsHtml += `
               <div class="event-card">
@@ -924,11 +944,62 @@
       });
     }
 
+    function renderChecklists() {
+      const container = document.getElementById("checklist-containers");
+      container.innerHTML = "";
+
+      const catSelect = document.getElementById("new-check-cat");
+      const currentSelectedCat = catSelect.value;
+      catSelect.innerHTML = "";
+
+      tripData.checklists.forEach((group, gIdx) => {
+        // 更新分類選單
+        const opt = document.createElement("option");
+        opt.value = group.cat;
+        opt.innerText = group.cat;
+        catSelect.appendChild(opt);
+
+        let itemsHtml = "";
+        group.items.forEach((item, iIdx) => {
+          itemsHtml += `
+            <div class="check-item ${item.done ? 'done' : ''}">
+              <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleCheckDone(${gIdx}, ${iIdx})">
+              <div class="check-text">
+                <strong>${item.title}</strong>
+                ${item.desc ? `<span>${item.desc}</span>` : ''}
+              </div>
+              <button class="del-check-btn" onclick="deleteCheckItem(${gIdx}, ${iIdx})">✕</button>
+            </div>
+          `;
+        });
+
+        container.innerHTML += `
+          <div class="checklist-group">
+            <div class="checklist-header">
+              <div class="checklist-title">${group.cat}</div>
+              <button class="del-btn" onclick="deleteCheckCategory(${gIdx})">刪除此分類</button>
+            </div>
+            ${itemsHtml || '<div style="font-size:12px; color:#A9B8B0;">尚無項目</div>'}
+          </div>
+        `;
+      });
+
+      // 加上「自訂全新主題」選項
+      const newOpt = document.createElement("option");
+      newOpt.value = "__NEW__";
+      newOpt.innerText = "＋ 自訂全新主題...";
+      catSelect.appendChild(newOpt);
+
+      if (currentSelectedCat) catSelect.value = currentSelectedCat;
+    }
+
     function renderAll() {
       renderItinerary();
       renderShopping();
+      renderChecklists();
     }
 
+    // 行程功能
     function togglePayer(dIdx, eIdx, person) {
       const cur = tripData.days[dIdx].events[eIdx].payer;
       tripData.days[dIdx].events[eIdx].payer = (cur === person) ? "" : person;
@@ -947,6 +1018,7 @@
       }
     }
 
+    // 購物功能
     function switchShopPerson(person) {
       activeShopPerson = person;
       document.getElementById("btn-person-dora").classList.toggle("active", person === "Dora");
@@ -991,60 +1063,11 @@
       saveData();
     }
 
-    function switchMainTab(tab) {
-      document.getElementById("tab-btn-itinerary").classList.toggle("active", tab === 'itinerary');
-      document.getElementById("tab-btn-shopping").classList.toggle("active", tab === 'shopping');
-      document.getElementById("tab-btn-checklist").classList.toggle("active", tab === 'checklist');
-
-      document.getElementById("itinerary-section").style.display = tab === 'itinerary' ? 'block' : 'none';
-      document.getElementById("shopping-section").style.display = tab === 'shopping' ? 'block' : 'none';
-      document.getElementById("checklist-section").style.display = tab === 'checklist' ? 'block' : 'none';
+    // 行前備忘自訂功能
+    function toggleCustomCatInput(val) {
+      const customInput = document.getElementById("new-check-custom-cat");
+      customInput.style.display = (val === "__NEW__") ? "block" : "none";
     }
 
-    function openAddModal(dayIdx) {
-      document.getElementById("modal-day-idx").value = dayIdx;
-      document.getElementById("modal-time").value = "";
-      document.getElementById("modal-event-title").value = "";
-      document.getElementById("modal-tag").value = "";
-      document.getElementById("modal-desc").value = "";
-      document.getElementById("modal-cost").value = "";
-      document.getElementById("modal-payer").value = "";
-      document.getElementById("modal-map").value = "";
-      document.getElementById("event-modal").style.display = "flex";
-      document.body.style.overflow = "hidden";
-    }
-
-    function closeModal() {
-      document.getElementById("event-modal").style.display = "none";
-      document.body.style.overflow = "";
-    }
-
-    function saveEvent() {
-      const dIdx = document.getElementById("modal-day-idx").value;
-      const title = document.getElementById("modal-event-title").value.trim();
-      if (!title) {
-        alert("請輸入行程名稱！");
-        return;
-      }
-
-      const newEvent = {
-        time: document.getElementById("modal-time").value.trim() || "待定",
-        title: title,
-        tag: document.getElementById("modal-tag").value.trim() || "景點",
-        desc: document.getElementById("modal-desc").value.trim(),
-        cost: parseInt(document.getElementById("modal-cost").value, 10) || 0,
-        payer: document.getElementById("modal-payer").value,
-        map: document.getElementById("modal-map").value.trim()
-      };
-
-      tripData.days[dIdx].events.push(newEvent);
-      sortDayEvents(dIdx);
-
-      closeModal();
-      saveData();
-    }
-
-    renderAll();
-  </script>
-</body>
-</html>
+    function addChecklistItem() {
+      const catSelect = document.getElementById("new-check-
