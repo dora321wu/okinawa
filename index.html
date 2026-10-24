@@ -46,6 +46,15 @@
       opacity: 0.95;
       margin-bottom: 10px;
     }
+    .status-pill {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
     .weather-pill {
       background: rgba(255, 255, 255, 0.2);
       padding: 4px 10px;
@@ -541,7 +550,6 @@
     .btn-save { background: var(--primary); color: #fff; }
     .btn-cancel { background: #EEF4F1; color: var(--text-muted); }
 
-    /* 底部管理區 */
     .reset-btn-bar {
       text-align: center;
       margin-top: 30px;
@@ -561,7 +569,10 @@
 
   <header>
     <div class="top-meta">
-      <span>🌿 OKINAWA 4D3N 自駕行</span>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span>🌿 OKINAWA 4D3N</span>
+        <span class="status-pill" id="sync-status">🟡 載入雲端中...</span>
+      </div>
       <a class="weather-pill" href="https://tenki.jp/forecast/10/50/9110/47201/1hour.html" target="_blank">
         🌤️ 那霸天候 · tenki.jp
       </a>
@@ -648,9 +659,8 @@
       </div>
     </div>
 
-    <!-- 底部重設工具 -->
     <div class="reset-btn-bar">
-      <button class="reset-btn" onclick="resetToDefault()">🔄 若畫面有問題，點此一鍵修復預設資料</button>
+      <button class="reset-btn" onclick="resetToDefault()">🔄 重設回完整預設行程</button>
     </div>
   </main>
 
@@ -703,7 +713,10 @@
   </div>
 
   <script>
-    // 注入全部編輯好的行程與行前備忘
+    // 你的 Firebase Realtime Database 串接位址
+    var FIREBASE_URL = "https://okinawa-4e17b-default-rtdb.firebaseio.com/tripData.json";
+
+    // 預設已注入影片中的全部行程與行前備忘
     var defaultData = {
       days: [
         {
@@ -918,35 +931,62 @@
       ]
     };
 
-    // 強制升級最新版本快取，防白屏
-    var CACHE_KEY = "okinawa_trip_prod_v10";
-    var tripData = null;
-
-    try {
-      var stored = localStorage.getItem(CACHE_KEY);
-      if (stored) {
-        tripData = JSON.parse(stored);
-      }
-    } catch (e) {
-      tripData = null;
-    }
-
-    if (!tripData || !tripData.days || !tripData.shopping || !tripData.checklists) {
-      tripData = JSON.parse(JSON.stringify(defaultData));
-    }
-
+    var tripData = JSON.parse(JSON.stringify(defaultData));
     var activeShopPerson = "Dora";
 
-    function saveData() {
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(tripData));
-      } catch (e) {}
+    function updateSyncStatus(msg, color) {
+      var el = document.getElementById("sync-status");
+      if (el) {
+        el.innerText = msg;
+        el.style.color = color || "#fff";
+      }
+    }
+
+    // 從 Firebase 載入最新資料
+    function loadFromFirebase() {
+      updateSyncStatus("🟡 載入雲端中...", "#FFEAA7");
+      fetch(FIREBASE_URL)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.days && data.days.length > 0) {
+            tripData = data;
+            // 補充空結構防呆
+            if (!tripData.shopping) tripData.shopping = defaultData.shopping;
+            if (!tripData.checklists) tripData.checklists = defaultData.checklists;
+            updateSyncStatus("🟢 雲端已同步", "#55EFC4");
+          } else {
+            // 資料庫若為空，將預設資料初始化上傳至雲端
+            saveData(true);
+          }
+          renderAll();
+        })
+        .catch(function(err) {
+          updateSyncStatus("⚪ 本地離線模式", "#DFE6E9");
+          renderAll();
+        });
+    }
+
+    // 儲存資料到 Firebase 雲端
+    function saveData(isInit) {
+      if (!isInit) updateSyncStatus("🟡 同步上傳中...", "#FFEAA7");
       renderAll();
+
+      fetch(FIREBASE_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(tripData)
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        updateSyncStatus("🟢 雲端已同步", "#55EFC4");
+      })
+      .catch(function(err) {
+        updateSyncStatus("⚠️ 同步失敗 (請檢查網路)", "#FF7675");
+      });
     }
 
     function resetToDefault() {
-      if (confirm("確定要將所有內容恢復成初始排好的完整行程嗎？")) {
-        try { localStorage.removeItem(CACHE_KEY); } catch (e) {}
+      if (confirm("確定要將所有內容重設回初始排好的行程嗎？這會同步覆蓋雲端資料！")) {
         tripData = JSON.parse(JSON.stringify(defaultData));
         saveData();
       }
@@ -1383,7 +1423,8 @@
       document.getElementById("checklist-section").style.display = (tab === 'checklist') ? 'block' : 'none';
     }
 
-    renderAll();
+    // 啟動自動連線 Firebase
+    loadFromFirebase();
   </script>
 </body>
 </html>
