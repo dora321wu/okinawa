@@ -541,18 +541,48 @@
     .btn-save { background: var(--primary); color: #fff; }
     .btn-cancel { background: #EEF4F1; color: var(--text-muted); }
 
-    .reset-btn-bar {
+    /* 底部同步與管理工具區 */
+    .sync-tools-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 25px;
       text-align: center;
-      margin-top: 30px;
+      box-shadow: var(--shadow);
     }
-    .reset-btn {
-      font-size: 11px;
-      color: #92A69C;
-      background: transparent;
-      border: 1px solid #D1E0D8;
-      padding: 5px 12px;
-      border-radius: 14px;
+    .sync-tools-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--forest-dark);
+      margin-bottom: 6px;
+    }
+    .sync-tools-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .sync-btn-group {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .tool-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
+      border: 1px solid var(--border);
+      background: #F4F8F6;
+      color: var(--primary);
+    }
+    .tool-btn.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
     }
   </style>
 </head>
@@ -647,9 +677,15 @@
       </div>
     </div>
 
-    <!-- 底部重設工具 -->
-    <div class="reset-btn-bar">
-      <button class="reset-btn" onclick="resetToDefault()">🔄 若畫面有問題，點此一鍵修復預設資料</button>
+    <!-- 底部：一鍵資料同步與備份工具 -->
+    <div class="sync-tools-card">
+      <div class="sync-tools-title">📲 雙人資料同步與備份工具</div>
+      <div class="sync-tools-sub">點擊「匯出代碼」可一鍵複製手機裡的最新行程與花費；傳給朋友點「匯入」即可同步最新進度！</div>
+      <div class="sync-btn-group">
+        <button class="tool-btn primary" onclick="exportDataCode()">📤 匯出目前所有行程代碼</button>
+        <button class="tool-btn" onclick="importDataCode()">📥 貼上代碼匯入同步</button>
+        <button class="tool-btn" onclick="resetToDefault()">🔄 重設初始版</button>
+      </div>
     </div>
   </main>
 
@@ -702,7 +738,7 @@
   </div>
 
   <script>
-    // 完整注入您影片中編輯好的所有行程與備忘！
+    // 預設已注入影片中的完整 4 天行程與所有備忘
     const defaultData = {
       days: [
         {
@@ -917,8 +953,7 @@
       ]
     };
 
-    // 升級版本快取金鑰，確保朋友打開時優先採用最完整的預設資料
-    const CACHE_KEY = "okinawa_trip_master_v5";
+    const CACHE_KEY = "okinawa_trip_master_v6";
     let tripData;
     try {
       const stored = localStorage.getItem(CACHE_KEY);
@@ -942,6 +977,38 @@
         localStorage.setItem(CACHE_KEY, JSON.stringify(tripData));
       } catch (e) {}
       renderAll();
+    }
+
+    // 匯出代碼功能
+    function exportDataCode() {
+      const code = JSON.stringify(tripData);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          alert("✅ 已成功複製目前的手機行程代碼！\n請直接貼在 LINE 傳給朋友，或貼給我！");
+        }).catch(() => {
+          prompt("請手動長按複製底下的行程代碼：", code);
+        });
+      } else {
+        prompt("請手動長按複製底下的行程代碼：", code);
+      }
+    }
+
+    // 匯入代碼功能
+    function importDataCode() {
+      const input = prompt("請貼上收到的行程代碼文字：");
+      if (!input) return;
+      try {
+        const parsed = JSON.parse(input);
+        if (parsed && parsed.days) {
+          tripData = parsed;
+          saveData();
+          alert("🎉 匯入成功！行程與花費已更新為最新版本！");
+        } else {
+          alert("代碼格式不符合，請確認是否完整複製！");
+        }
+      } catch (e) {
+        alert("代碼無效，請確認複製的內容是否完整！");
+      }
     }
 
     function resetToDefault() {
