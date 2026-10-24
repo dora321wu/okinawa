@@ -1070,4 +1070,120 @@
     }
 
     function addChecklistItem() {
-      const catSelect = document.getElementById("new-check-
+      const catSelect = document.getElementById("new-check-cat");
+      const customCatInput = document.getElementById("new-check-custom-cat");
+      const titleInput = document.getElementById("new-check-title");
+      const descInput = document.getElementById("new-check-desc");
+
+      let category = catSelect.value;
+      if (category === "__NEW__") {
+        category = customCatInput.value.trim();
+        if (!category) {
+          alert("請輸入全新主題名稱！");
+          return;
+        }
+      }
+
+      const title = titleInput.value.trim();
+      if (!title) {
+        alert("請輸入備忘項目名稱！");
+        return;
+      }
+
+      let group = tripData.checklists.find(g => g.cat === category);
+      if (!group) {
+        group = { cat: category, items: [] };
+        tripData.checklists.push(group);
+      }
+
+      group.items.push({
+        title: title,
+        desc: descInput.value.trim(),
+        done: false
+      });
+
+      titleInput.value = "";
+      descInput.value = "";
+      customCatInput.value = "";
+      customCatInput.style.display = "none";
+      catSelect.value = category;
+      saveData();
+    }
+
+    function toggleCheckDone(gIdx, iIdx) {
+      tripData.checklists[gIdx].items[iIdx].done = !tripData.checklists[gIdx].items[iIdx].done;
+      saveData();
+    }
+
+    function deleteCheckItem(gIdx, iIdx) {
+      tripData.checklists[gIdx].items.splice(iIdx, 1);
+      saveData();
+    }
+
+    function deleteCheckCategory(gIdx) {
+      if (confirm(`確定要刪除「${tripData.checklists[gIdx].cat}」整個主題分類嗎？`)) {
+        tripData.checklists.splice(gIdx, 1);
+        saveData();
+      }
+    }
+
+    // 頁籤切換
+    function switchMainTab(tab) {
+      document.getElementById("tab-btn-itinerary").classList.toggle("active", tab === 'itinerary');
+      document.getElementById("tab-btn-shopping").classList.toggle("active", tab === 'shopping');
+      document.getElementById("tab-btn-checklist").classList.toggle("active", tab === 'checklist');
+
+      document.getElementById("itinerary-section").style.display = tab === 'itinerary' ? 'block' : 'none';
+      document.getElementById("shopping-section").style.display = tab === 'shopping' ? 'block' : 'none';
+      document.getElementById("checklist-section").style.display = tab === 'checklist' ? 'block' : 'none';
+    }
+
+    function openAddModal(dayIdx) {
+      document.getElementById("modal-day-idx").value = dayIdx;
+      document.getElementById("modal-time").value = "";
+      document.getElementById("modal-event-title").value = "";
+      document.getElementById("modal-tag").value = "";
+      document.getElementById("modal-desc").value = "";
+      document.getElementById("modal-cost").value = "";
+      document.getElementById("modal-payer").value = "";
+      document.getElementById("modal-map").value = "";
+      document.getElementById("event-modal").style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      document.getElementById("event-modal").style.display = "none";
+      document.body.style.overflow = "";
+    }
+
+    function saveEvent() {
+      const dIdx = document.getElementById("modal-day-idx").value;
+      const title = document.getElementById("modal-event-title").value.trim();
+      if (!title) {
+        alert("請輸入行程名稱！");
+        return;
+      }
+
+      const mapInput = document.getElementById("modal-map").value.trim();
+
+      const newEvent = {
+        time: document.getElementById("modal-time").value.trim() || "待定",
+        title: title,
+        tag: document.getElementById("modal-tag").value.trim() || "景點",
+        desc: document.getElementById("modal-desc").value.trim(),
+        cost: parseInt(document.getElementById("modal-cost").value, 10) || 0,
+        payer: document.getElementById("modal-payer").value,
+        map: mapInput || title // 若未填寫地圖，預設直接用地點名稱進行導航搜尋
+      };
+
+      tripData.days[dIdx].events.push(newEvent);
+      sortDayEvents(dIdx);
+
+      closeModal();
+      saveData();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
