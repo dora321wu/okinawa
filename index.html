@@ -633,9 +633,10 @@
         <h4 style="font-size: 13px; color: var(--forest-dark); margin-bottom: 8px;">＋ 新增自訂行前備忘</h4>
         <div style="display: flex; flex-direction: column; gap: 6px;">
           <select id="new-check-cat" onchange="toggleCustomCatInput(this.value)" style="padding: 8px 10px; border: 1px solid #CCDCD3; border-radius: 8px; font-size: 13px;">
-            <option value="自駕開車必備">🚗 自駕開車必備</option>
-            <option value="通關與支付">📱 通關與支付</option>
-            <option value="生活與隨身行李">🧳 生活與隨身行李</option>
+            <option value="🚗 自駕開車必備">🚗 自駕開車必備</option>
+            <option value="📱 通關與支付">📱 通關與支付</option>
+            <option value="👗 衣著">👗 衣著</option>
+            <option value="🧴 日用品">🧴 日用品</option>
             <option value="__NEW__">＋ 自訂全新主題...</option>
           </select>
           <input type="text" id="new-check-custom-cat" placeholder="請輸入新主題名稱 (例: 攝影器材)" style="display: none; padding: 8px 10px; border: 1px solid #CCDCD3; border-radius: 8px; font-size: 13px;">
@@ -701,6 +702,7 @@
   </div>
 
   <script>
+    // 完整注入您影片中編輯好的所有行程與備忘！
     const defaultData = {
       days: [
         {
@@ -710,8 +712,8 @@
           traffic: "機場接駁車 ➜ 租車公司取車",
           events: [
             {
-              time: "12:00",
-              tag: "✈️ 班機抵達",
+              time: "12:30",
+              tag: "✈️ 機場抵達",
               title: "抵達那霸機場 (OKA) ＆ 入境審查",
               desc: "領取行李、出示 VJW QR Code 通關。往國內線方向走至租車接駁車候車處。",
               cost: "",
@@ -728,6 +730,36 @@
               payer: "",
               origin: "那霸機場",
               destination: "沖繩租車公司"
+            },
+            {
+              time: "14:00～16:00",
+              tag: "吃吃喝喝",
+              title: "前往美國村",
+              desc: "可先去吃個飯、走走逛逛，從機場到美國村約40分鐘車程",
+              cost: "",
+              payer: "",
+              origin: "那霸機場 租車公司",
+              destination: "美國村"
+            },
+            {
+              time: "17:00",
+              tag: "飯店",
+              title: "飯店 check-in",
+              desc: "回去看夕陽",
+              cost: "",
+              payer: "",
+              origin: "美國村",
+              destination: "瀨底島希爾頓渡假酒店"
+            },
+            {
+              time: "20:00～21:00",
+              tag: "採買",
+              title: "超市採買",
+              desc: "買好買滿",
+              cost: "",
+              payer: "",
+              origin: "瀨底島希爾頓渡假酒店",
+              destination: "The Big Express 本部店"
             }
           ]
         },
@@ -736,14 +768,56 @@
           date: "11/12 (四)",
           desc: "沖繩悠閒自駕探索日",
           traffic: "全日自駕",
-          events: []
+          events: [
+            {
+              time: "9:30～14:30",
+              tag: "大自然散步",
+              title: "享受神的大自然靈之館 ASMUI",
+              desc: "飯店開車過去大約1小時30分鐘。園區走一圈約1小時30分鐘，建議停留兩小時（還有導覽）；如果很餓可以留下來吃豬排飯/沖繩定食",
+              cost: "",
+              payer: "",
+              origin: "瀨底島希爾頓渡假酒店",
+              destination: "ASMUI Spiritual"
+            },
+            {
+              time: "15:00",
+              tag: "被海包圍",
+              title: "前往看最北部邊戶岬海岸",
+              desc: "從ASMUI Spiritual到邊戶岬開車只要5分鐘，可以在附近吃午餐",
+              cost: "",
+              payer: "",
+              origin: "ASMUI Spiritual",
+              destination: "邊戶岬"
+            },
+            {
+              time: "17:00",
+              tag: "景點",
+              title: "好吃的海鮮",
+              desc: "每天供應當天捕獲的現流生魚片，岸島是與鮮魚定食。晚餐17:30開始",
+              cost: "",
+              payer: "",
+              origin: "",
+              destination: ""
+            }
+          ]
         },
         {
           d: "Day 3",
           date: "11/13 (五)",
           desc: "蔚藍海景與在地美食巡禮",
           traffic: "全日自駕",
-          events: []
+          events: [
+            {
+              time: "14:00",
+              tag: "",
+              title: "在飯店耍廢",
+              desc: "游泳、泡溫泉、喝酒、看書、耍廢",
+              cost: "",
+              payer: "",
+              origin: "",
+              destination: ""
+            }
+          ]
         },
         {
           d: "Day 4",
@@ -752,24 +826,34 @@
           traffic: "自駕至營業所還車 ➜ 接駁車至那霸機場",
           events: [
             {
+              time: "9:00",
+              tag: "",
+              title: "離開飯店前往還車",
+              desc: "最晚9:00一定要 check out",
+              cost: "",
+              payer: "",
+              origin: "瀨底島希爾頓渡假酒店",
+              destination: "那霸機場 租車公司"
+            },
+            {
               time: "11:00～11:30",
               tag: "⚠️ 建議 11:00 抵達",
               title: "營業所加滿油還車 ＆ 搭接駁車往機場",
               desc: "還車前至附近指定加油站加滿油（保留收據）。檢查無誤後搭乘接駁車至國際線航廈報到。",
               cost: "",
               payer: "",
-              origin: "飯店",
+              origin: "加油站",
               destination: "那霸機場 租車還車處"
             },
             {
               time: "13:35",
-              tag: "✈️ 班機起飛",
+              tag: "✈️ 羽田起飛",
               title: "那霸機場 (OKA) 出境登機 ➜ 返抵溫暖的家",
               desc: "辦理託運、通過安檢與免稅店採買，準時登機返台。",
               cost: "",
               payer: "",
               origin: "",
-              destination: "那霸機場國際線航廈"
+              destination: ""
             }
           ]
         }
@@ -807,14 +891,37 @@
             { title: "日本 eSIM / 漫遊網卡開通", desc: "飛機降落後開啟行動數據保持聯絡與導航。", done: false },
             { title: "車用手機架 ＋ 充電線（CarPlay 導航）", desc: "連接車載螢幕使用 Google Maps 導航必備。", done: false }
           ]
+        },
+        {
+          cat: "👗 衣著",
+          items: [
+            { title: "泳衣/泳褲/泳鏡", desc: "可以游泳泡溫泉", done: false },
+            { title: "太陽眼鏡", desc: "", done: false },
+            { title: "雨衣", desc: "", done: false },
+            { title: "雨傘", desc: "", done: false },
+            { title: "帽子", desc: "", done: false },
+            { title: "防風衣", desc: "肯定風很大", done: false },
+            { title: "厚外套", desc: "", done: false }
+          ]
+        },
+        {
+          cat: "🧴 日用品",
+          items: [
+            { title: "化妝品", desc: "", done: false },
+            { title: "自拍架", desc: "但有些地方不適用", done: false },
+            { title: "防曬乳", desc: "", done: false },
+            { title: "飾品", desc: "我就喜歡漂亮", done: false },
+            { title: "感冒藥、腸胃藥、頭痛藥、維他命C", desc: "人老了要懂得照顧好自己", done: false }
+          ]
         }
       ]
     };
 
-    // 核心安全讀取機制：保證絕不報錯白屏
+    // 升級版本快取金鑰，確保朋友打開時優先採用最完整的預設資料
+    const CACHE_KEY = "okinawa_trip_master_v5";
     let tripData;
     try {
-      const stored = localStorage.getItem("okinawa_safe_v4");
+      const stored = localStorage.getItem(CACHE_KEY);
       if (stored) {
         tripData = JSON.parse(stored);
       } else {
@@ -832,14 +939,14 @@
 
     function saveData() {
       try {
-        localStorage.setItem("okinawa_safe_v4", JSON.stringify(tripData));
+        localStorage.setItem(CACHE_KEY, JSON.stringify(tripData));
       } catch (e) {}
       renderAll();
     }
 
     function resetToDefault() {
-      if (confirm("確定要將所有行程與清單恢復成初始預設狀態嗎？")) {
-        localStorage.removeItem("okinawa_safe_v4");
+      if (confirm("確定要將所有內容恢復成初始排好的完整行程嗎？")) {
+        localStorage.removeItem(CACHE_KEY);
         tripData = JSON.parse(JSON.stringify(defaultData));
         saveData();
       }
@@ -1276,7 +1383,6 @@
       document.getElementById("checklist-section").style.display = (tab === 'checklist') ? 'block' : 'none';
     }
 
-    // 啟動渲染
     renderAll();
   </script>
 </body>
